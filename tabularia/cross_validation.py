@@ -79,7 +79,7 @@ class CrossValidation:
     def __call__(self, dataset, targets, groups=None, test_dataset=None):
         scores, oof_predictions, test_predictions = [], [], []
         
-        folds = self.get_split(dataset, targets)
+        folds = self.get_split(dataset=dataset, targets=targets, groups=groups)
         for fold, (train_indexes, validation_indexes) in enumerate(folds):
             (train_data, train_targets), (validation_data, validation_targets) = self.get_fold_data(dataset=dataset, 
                                                                                                     targets=targets,
