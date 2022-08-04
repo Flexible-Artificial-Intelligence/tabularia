@@ -28,7 +28,6 @@ class CrossValidation:
             
         return folds
 
-        
     def get_fold_data(self, dataset, targets, train_indexes, validation_indexes):
         if isinstance(dataset, pd.DataFrame):
             train_data = dataset.iloc[train_indexes]
@@ -75,6 +74,14 @@ class CrossValidation:
         
     def save_model(self, model, fold):
         return None
+
+    def compute_feature_importance(self, 
+                                   model, 
+                                   train_data, 
+                                   train_targets, 
+                                   validation_data, 
+                                   validation_targets):
+        pass
         
     def __call__(self, dataset, targets, groups=None, test_dataset=None):
         scores, oof_predictions, test_predictions = [], [], []
@@ -97,13 +104,21 @@ class CrossValidation:
             
             validation_predictions = self.predict(model=model, data=validation_data)
             validation_score = self.score(targets=validation_targets, predictions=validation_predictions)
-            
+
             oof_predictions.append(validation_predictions)
             scores.append(validation_score)
             
+            self.compute_feature_importance(model=model, 
+                                            train_data=train_data, 
+                                            train_targets=train_targets, 
+                                            validation_data=validation_data, 
+                                            validation_targets=validation_targets)
+            
+
             if self.verbose:
                 print(f"Fold {fold+1}/{self.__num_folds}: {validation_score}", end="\n"*2)
-            
+
+        
             if test_dataset is not None:
                 fold_test_predictions = self.predict(model=model, data=test_dataset)
                 test_predictions.append(fold_test_predictions)
